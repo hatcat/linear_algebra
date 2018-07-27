@@ -9,6 +9,7 @@
 *.opendb
 *.pch
 *.pdb
+*.suo
 *.tlog
 *.user
 unsuccessfulbuild
