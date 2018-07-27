@@ -17,7 +17,7 @@ namespace std {
 
 			// Constructors
 			constexpr matrix() noexcept;
-			constexpr matrix(const matrix_t&) noexcept;
+			constexpr explicit matrix(const matrix_t&) noexcept;
 			constexpr matrix(std::initializer_list<scalar_t>) noexcept;				// Pass by value or rref?
 			constexpr matrix(scalar_t const(&src)[rep::row * rep::col]) noexcept;	// Really, this should be a span or a range
 
@@ -214,7 +214,7 @@ inline constexpr std::experimental::matrix<rep> std::experimental::operator*(std
 template<class rep>
 inline constexpr std::experimental::matrix<rep> std::experimental::operator*(typename matrix<rep>::scalar_t const& lhs, std::experimental::matrix<rep> const& rhs) noexcept
 {
-	return rep::scalar_multiply_matrix(lhs, rhs.data());
+	return std::experimental::matrix<rep>(rep::scalar_multiply_matrix(lhs, rhs.data()));
 }
 
 template<class rep>
@@ -249,7 +249,7 @@ inline constexpr auto std::experimental::operator*(std::experimental::matrix<rep
 template<class rep>
 inline constexpr auto std::experimental::transpose(std::experimental::matrix<rep> const& mat) noexcept
 {
-	auto res = rep::transpose(mat.data());
+	auto res = transpose<rep>(mat.data());
 	return matrix<rep::other<rep::col, rep::row>>(res);
 }
 
@@ -314,8 +314,6 @@ inline constexpr typename rep::scalar_t std::experimental::determinant(std::expe
 template<class rep>
 inline constexpr auto std::experimental::classical_adjoint(std::experimental::matrix<rep> const& mat) noexcept
 {
-//	auto res = rep::transpose(mat.data());
-//	return matrix<rep::other<rep::col, rep::row>>(res);
 	auto res = rep::classical_adjoint(mat.data());
 	return matrix<rep::other<rep::col, rep::row>>(res);
 }
@@ -323,5 +321,5 @@ inline constexpr auto std::experimental::classical_adjoint(std::experimental::ma
 template<class rep>
 inline constexpr std::experimental::matrix<rep> std::experimental::inverse(std::experimental::matrix<rep> const& mat)
 {
-	return rep::inverse(mat.data());
+	return std::experimental::matrix<rep>(rep::inverse(mat.data()));
 }
