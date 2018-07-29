@@ -2,7 +2,9 @@
 *.exe
 *.idb
 *.ilk
+*.iobj
 *.ipch
+*.ipdb
 *.lastbuildstate
 *.log
 *.obj
