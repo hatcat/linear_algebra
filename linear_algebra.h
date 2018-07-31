@@ -182,7 +182,7 @@ inline constexpr std::experimental::matrix<Rep> std::experimental::operator*(std
 template<class Rep>
 inline constexpr std::experimental::matrix<Rep> std::experimental::operator*(typename std::experimental::matrix<Rep>::scalar_t const& lhs, std::experimental::matrix<Rep> const& rhs) noexcept
 {
-	return matrix<Rep>(Rep::scalar_multiply_matrix(lhs, rhs.data()));
+	return matrix<Rep>(Rep::matrix_multiply_scalar(rhs.data(), lhs));
 }
 
 template<class Rep>

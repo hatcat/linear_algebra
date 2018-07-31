@@ -12,55 +12,52 @@ namespace std {
 		struct matrix_impl
 		{
 			template <class InputIterator>
-			static constexpr bool equal(InputIterator lhs, InputIterator rhs, size_t size) noexcept;
+			static constexpr bool equal(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept;
 
 			template <class InputIterator>
-			static constexpr bool not_equal(InputIterator lhs, InputIterator rhs, size_t size) noexcept;
+			static constexpr bool not_equal(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept;
 
 			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator matrix_multiply_scalar(InputIterator lhs, Scalar rhs, OutputIterator res, size_t size) noexcept;
+			static constexpr OutputIterator matrix_multiply_scalar(InputIterator lhs, InputIterator end, OutputIterator res, Scalar rhs) noexcept;
 
 			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator scalar_multiply_matrix(Scalar lhs, InputIterator rhs, OutputIterator res, size_t size) noexcept;
+			static constexpr InputIterator matrix_multiply_matrix(InputIterator lhs, InputIterator rhs, OutputIterator res, size_t m, size_t n, size_t q);	// TO DO
 
 			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator matrix_multiply_matrix(InputIterator lhs, InputIterator rhs, OutputIterator res, std::pair<size_t, size_t> lhs_size, std::pair<size_t, size_t> rhs_size);	// TO DO
+			static constexpr OutputIterator divide(InputIterator lhs, InputIterator end, OutputIterator res, Scalar rhs);
 
 			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator divide(InputIterator lhs, Scalar rhs, OutputIterator res, size_t size);
+			static constexpr OutputIterator add(InputIterator lhs, InputIterator end, InputIterator rhs, OutputIterator res) noexcept;
 
 			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator add(InputIterator lhs, InputIterator rhs, OutputIterator res, size_t size) noexcept;
-
-			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator subtract(InputIterator lhs, InputIterator rhs, OutputIterator res, size_t size) noexcept;
+			static constexpr OutputIterator subtract(InputIterator lhs, InputIterator end, InputIterator rhs, OutputIterator res) noexcept;
 
 			template <class InputIterator>
-			static constexpr bool is_identity(InputIterator const& lhs, std::pair<size_t, size_t> size) noexcept;	// TO DO
+			static constexpr bool is_identity(InputIterator lhs, size_t m) noexcept;
 
 			template <class OutputIterator>
-			static constexpr void identity(OutputIterator res, size_t size) noexcept;	// TO DO
+			static constexpr OutputIterator identity(OutputIterator res, size_t m) noexcept;
 
 			template <class InputIterator>
-			static constexpr Scalar determinant(InputIterator const& lhs, size_t size);	// TO DO
+			static constexpr Scalar determinant(InputIterator const& lhs, size_t m);	// TO DO
 
 			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator inverse(InputIterator lhs, OutputIterator res, std::pair<size_t, size_t> size);	// TO DO
+			static constexpr InputIterator inverse(InputIterator lhs, OutputIterator res, size_t m, size_t n);	// TO DO
 
 			template <class InputIterator>
-			static constexpr Scalar inner_product(InputIterator lhs, InputIterator rhs, size_t size) noexcept;
+			static constexpr Scalar inner_product(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept;
 
 			template <class InputIterator>
-			static constexpr Scalar modulus(InputIterator lhs, size_t size) noexcept;
+			static constexpr Scalar modulus(InputIterator lhs, InputIterator end) noexcept;
 
 			template <class InputIterator>
-			static constexpr Scalar modulus_squared(InputIterator lhs, size_t size) noexcept;
+			static constexpr Scalar modulus_squared(InputIterator lhs, InputIterator end) noexcept;
 
 			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator unit(InputIterator lhs, OutputIterator res, size_t size);
+			static constexpr OutputIterator unit(InputIterator lhs, InputIterator end, OutputIterator res);
 
 			template <class InputIterator, class OutputIterator>
-			static constexpr InputIterator submatrix(InputIterator lhs, size_t m, size_t n, size_t size);	// TO DO
+			static constexpr OutputIterator submatrix(InputIterator lhs, OutputIterator res, size_t m, size_t n, size_t i, size_t j);	// TO DO
 		};
 
 		////////////////////////////////////////////////////////
@@ -88,7 +85,6 @@ namespace std {
 			static constexpr bool equal(matrix_t const& lhs, matrix_t const& rhs) noexcept;
 			static constexpr bool not_equal(matrix_t const& lhs, matrix_t const& rhs) noexcept;
 			static constexpr matrix_t matrix_multiply_scalar(matrix_t const& lhs, scalar_t const& rhs) noexcept;
-			static constexpr matrix_t scalar_multiply_matrix(scalar_t const& lhs, matrix_t const& rhs) noexcept;
 			template <size_t ColCount2> static constexpr typename matrix_traits<Scalar, RowCount, ColCount2>::matrix_t matrix_multiply_matrix(matrix_t const& lhs, typename matrix_traits<Scalar, ColCount, ColCount2>::matrix_t const& rhs) noexcept;
 			static constexpr matrix_t divide(matrix_t const& lhs, scalar_t const& rhs) noexcept;
 			static constexpr matrix_t add(matrix_t const& lhs, matrix_t const& rhs) noexcept;
@@ -205,7 +201,6 @@ namespace std {
 			static constexpr bool equal(matrix_t const& lhs, matrix_t const& rhs) noexcept;
 			static constexpr bool not_equal(matrix_t const& lhs, matrix_t const& rhs) noexcept;
 			static constexpr matrix_t matrix_multiply_scalar(matrix_t const& lhs, scalar_t const& rhs) noexcept;
-			static constexpr matrix_t scalar_multiply_matrix(scalar_t const& lhs, matrix_t const& rhs) noexcept;
 			static constexpr matrix_t matrix_multiply_matrix(matrix_t const& lhs, matrix_t const& rhs);
 			static constexpr matrix_t divide(matrix_t const& lhs, scalar_t const& rhs);
 			static constexpr matrix_t add(matrix_t const& lhs, matrix_t const& rhs);
@@ -231,86 +226,115 @@ namespace std {
 ////////////////////////////////////////////////////////
 template <class Scalar>
 template <class InputIterator>
-constexpr bool std::experimental::matrix_impl<Scalar>::equal(InputIterator lhs, InputIterator rhs, size_t size) noexcept
+constexpr bool std::experimental::matrix_impl<Scalar>::equal(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept
 {
-	return std::equal(lhs, lhs + size, rhs);
+	return std::equal(lhs, end, rhs);
 }
 
 template <class Scalar>
 template <class InputIterator>
-constexpr bool std::experimental::matrix_impl<Scalar>::not_equal(InputIterator lhs, InputIterator rhs, size_t size) noexcept
+constexpr bool std::experimental::matrix_impl<Scalar>::not_equal(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept
 {
-	return !std::equal(lhs, lhs + size, rhs);
+	return !equal(lhs, end, rhs);
 }
 
 template<class Scalar>
 template <class InputIterator, class OutputIterator>
-inline constexpr InputIterator std::experimental::matrix_impl<Scalar>::matrix_multiply_scalar(InputIterator lhs, Scalar rhs, OutputIterator res, size_t size) noexcept
+inline constexpr OutputIterator std::experimental::matrix_impl<Scalar>::matrix_multiply_scalar(InputIterator lhs, InputIterator end, OutputIterator res, Scalar rhs) noexcept
 {
-	std::transform(lhs, lhs + size, res, [&](const auto& el) {return el * rhs; });
-	return res;
+	return std::transform(lhs, end, res, [&](const auto& el) {return el * rhs; });
 }
 
 template<class Scalar>
 template <class InputIterator, class OutputIterator>
-inline constexpr InputIterator std::experimental::matrix_impl<Scalar>::scalar_multiply_matrix(Scalar lhs, InputIterator rhs, OutputIterator res, size_t size) noexcept
+inline constexpr OutputIterator std::experimental::matrix_impl<Scalar>::divide(InputIterator lhs, InputIterator end, OutputIterator res, Scalar rhs)
 {
-	std::transform(rhs, rhs + size, res, [&](const auto& el) {return el * lhs; });
-	return res;
+	return std::transform(lhs, end, res, [&](const auto& el) {return el / rhs; });
 }
 
 template<class Scalar>
 template <class InputIterator, class OutputIterator>
-inline constexpr InputIterator std::experimental::matrix_impl<Scalar>::divide(InputIterator lhs, Scalar rhs, OutputIterator res, size_t size)
+constexpr OutputIterator std::experimental::matrix_impl<Scalar>::add(InputIterator lhs, InputIterator end, InputIterator rhs, OutputIterator res) noexcept
 {
-	std::transform(lhs, lhs + size, res, [&](const auto& el) {return el / rhs; });
-	return res;
+	return std::transform(lhs, end, rhs, res, [&](const auto& lel, const auto& rel) {return lel + rel; });
 }
 
 template<class Scalar>
 template <class InputIterator, class OutputIterator>
-constexpr InputIterator std::experimental::matrix_impl<Scalar>::add(InputIterator lhs, InputIterator rhs, OutputIterator res, size_t size) noexcept
+constexpr OutputIterator std::experimental::matrix_impl<Scalar>::subtract(InputIterator lhs, InputIterator end, InputIterator rhs, OutputIterator res) noexcept
 {
-	std::transform(lhs, lhs + size, rhs, res, [&](const auto& lel, const auto& rel) {return lel + rel; });
-	return res;
-}
-
-template<class Scalar>
-template <class InputIterator, class OutputIterator>
-constexpr InputIterator std::experimental::matrix_impl<Scalar>::subtract(InputIterator lhs, InputIterator rhs, OutputIterator res, size_t size) noexcept
-{
-	std::transform(lhs, lhs + size, rhs, res, [&](const auto& lel, const auto& rel) {return lel - rel; });
-	return res;
+	return std::transform(lhs, end, rhs, res, [&](const auto& lel, const auto& rel) {return lel - rel; });
 }
 
 template<class Scalar>
 template <class InputIterator>
-constexpr Scalar std::experimental::matrix_impl<Scalar>::inner_product(InputIterator lhs, InputIterator rhs, size_t size) noexcept
+constexpr bool std::experimental::matrix_impl<Scalar>::is_identity(InputIterator lhs, size_t m) noexcept
 {
-	return Scalar(std::inner_product(lhs, lhs + size, rhs, Scalar(0)));
+	auto x = m + 1;
+	for (auto y = 0; y != m * m; ++y, ++lhs)
+	{
+		if (x == (m + 1) && *lhs != Scalar(1))
+		{
+			return false;
+		}
+		else if (x != m + 1)
+		{
+			if (*lhs != Scalar(0)) return false;
+		}
+		if (--x == 0) x = m + 1;
+	}
+	return true;
+}
+
+template<class Scalar>
+template <class OutputIterator>
+constexpr OutputIterator std::experimental::matrix_impl<Scalar>::identity(OutputIterator res, size_t m) noexcept
+{
+	auto r = res;
+	auto x = m + 1;
+	for (auto y = 0; y != m * m; ++y, ++res)
+	{
+		if (x == (m + 1))
+		{
+			*res = Scalar(1);
+		}
+		else if (x != m + 1)
+		{
+			*res = Scalar(0);
+		}
+		if (--x == 0) x = m + 1;
+	}
+	return r;
+}
+
+
+template<class Scalar>
+template <class InputIterator>
+constexpr Scalar std::experimental::matrix_impl<Scalar>::inner_product(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept
+{
+	return Scalar(std::inner_product(lhs, end, rhs, Scalar(0)));
 }
 
 template<class Scalar>
 template <class InputIterator>
-constexpr Scalar std::experimental::matrix_impl<Scalar>::modulus(InputIterator lhs, size_t size) noexcept
+constexpr Scalar std::experimental::matrix_impl<Scalar>::modulus(InputIterator lhs, InputIterator end) noexcept
 {
-	return Scalar(std::sqrt(modulus_squared(lhs, size)));
+	return Scalar(std::sqrt(modulus_squared(lhs, end)));
 }
 
 template<class Scalar>
 template <class InputIterator>
-constexpr Scalar std::experimental::matrix_impl<Scalar>::modulus_squared(InputIterator lhs, size_t size) noexcept
+constexpr Scalar std::experimental::matrix_impl<Scalar>::modulus_squared(InputIterator lhs, InputIterator end) noexcept
 {
-	return std::accumulate(lhs, lhs + size, Scalar(0), [&](Scalar tot, const auto& el) {return tot + (el * el); });
+	return std::accumulate(lhs, end, Scalar(0), [&](Scalar tot, const auto& el) {return tot + (el * el); });
 }
 
 template<class Scalar>
 template <class InputIterator, class OutputIterator>
-constexpr InputIterator std::experimental::matrix_impl<Scalar>::unit(InputIterator lhs, OutputIterator res, size_t size)
+constexpr OutputIterator std::experimental::matrix_impl<Scalar>::unit(InputIterator lhs, InputIterator end, OutputIterator res)
 {
-	auto mod = modulus(lhs, size);
-	std::transform(lhs, lhs + size, res, [&](const auto& el) { return el / mod; });
-	return res;
+	auto mod = modulus(lhs, end);
+	return std::transform(lhs, end, res, [&](const auto& el) { return el / mod; });
 }
 
 ////////////////////////////////////////////////////////
@@ -333,28 +357,20 @@ inline std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::matrix
 template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr bool std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::equal(matrix_t const& lhs, matrix_t const& rhs) noexcept
 {
-	return matrix_impl<Scalar>::equal(lhs._Data, rhs._Data, row * col);
+	return matrix_impl<Scalar>::equal(lhs._Data, lhs._Data + (row * col), rhs._Data);
 }
 
 template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr bool std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::not_equal(matrix_t const& lhs, matrix_t const& rhs) noexcept
 {
-	return matrix_impl<Scalar>::not_equal(lhs._Data, rhs._Data, row * col);
+	return matrix_impl<Scalar>::not_equal(lhs._Data, lhs._Data + (row * col), rhs._Data);
 }
 
 template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr typename std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::matrix_multiply_scalar(typename matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t const& lhs, typename matrix_traits_base<Scalar, RowCount, ColCount>::scalar_t const& rhs) noexcept
 {
 	auto res(lhs);
-	matrix_impl<Scalar>::matrix_multiply_scalar(lhs._Data, rhs, res._Data, row * col);
-	return res;
-}
-
-template<class Scalar, size_t RowCount, size_t ColCount>
-inline constexpr typename std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::scalar_multiply_matrix(typename matrix_traits_base<Scalar, RowCount, ColCount>::scalar_t const& lhs, typename matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t const& rhs) noexcept
-{
-	auto res(rhs);
-	matrix_impl<Scalar>::matrix_multiply_scalar(rhs._Data, lhs, res._Data, row * col);
+	matrix_impl<Scalar>::matrix_multiply_scalar(lhs._Data, lhs._Data + (row * col), res._Data, rhs);
 	return res;
 }
 
@@ -382,7 +398,7 @@ template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr typename std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::divide(typename matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t const& lhs, typename matrix_traits_base<Scalar, RowCount, ColCount>::scalar_t const& rhs) noexcept
 {
 	auto res(lhs);
-	matrix_impl<Scalar>::divide(lhs._Data, rhs, res._Data, row * col);
+	matrix_impl<Scalar>::divide(lhs._Data, lhs._Data + (row * col), res._Data, rhs);
 	return res;
 }
 
@@ -390,7 +406,7 @@ template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr typename std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::add(typename matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t const& lhs, typename matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t const& rhs) noexcept
 {
 	auto res(lhs);
-	matrix_impl<Scalar>::add(lhs._Data, rhs._Data, res._Data, row * col);
+	matrix_impl<Scalar>::add(lhs._Data, lhs._Data + (row * col), rhs._Data, res._Data);
 	return res;
 }
 
@@ -398,7 +414,7 @@ template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr typename std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t std::experimental::matrix_traits_base<Scalar, RowCount, ColCount>::subtract(typename matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t const& lhs, typename matrix_traits_base<Scalar, RowCount, ColCount>::matrix_t const& rhs) noexcept
 {
 	auto res(lhs);
-	matrix_impl<Scalar>::subtract(lhs._Data, rhs._Data, res._Data, row * col);
+	matrix_impl<Scalar>::subtract(lhs._Data, lhs._Data + (row * col), rhs._Data, res._Data);
 	return res;
 }
 
@@ -452,26 +468,26 @@ inline std::experimental::vector_traits<Scalar, RowCount, ColCount>::vector_trai
 template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr Scalar std::experimental::vector_traits<Scalar, RowCount, ColCount>::inner_product(typename vector_traits<Scalar, RowCount, ColCount>::matrix_t const& lhs, typename vector_traits<Scalar, RowCount, ColCount>::matrix_t const& rhs) noexcept
 {
-	return matrix_impl<Scalar>::inner_product(lhs._Data, rhs._Data, col);
+	return matrix_impl<Scalar>::inner_product(lhs._Data, lhs._Data + (row * col), rhs._Data);
 }
 
 template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr Scalar std::experimental::vector_traits<Scalar, RowCount, ColCount>::modulus(typename vector_traits<Scalar, RowCount, ColCount>::matrix_t const& mat) noexcept
 {
-	return matrix_impl<Scalar>::modulus(mat._Data, row * col);
+	return matrix_impl<Scalar>::modulus(mat._Data, mat._Data + (row * col));
 }
 
 template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr Scalar std::experimental::vector_traits<Scalar, RowCount, ColCount>::modulus_squared(typename vector_traits<Scalar, RowCount, ColCount>::matrix_t const& mat) noexcept
 {
-	return matrix_impl<Scalar>::modulus_squared(mat._Data, row * col);
+	return matrix_impl<Scalar>::modulus_squared(mat._Data, mat._Data + (row * col));
 }
 
 template<class Scalar, size_t RowCount, size_t ColCount>
 inline constexpr typename std::experimental::vector_traits<Scalar, RowCount, ColCount>::matrix_t std::experimental::vector_traits<Scalar, RowCount, ColCount>::unit(typename vector_traits<Scalar, RowCount, ColCount>::matrix_t const& mat) noexcept
 {
 	auto res(mat);
-	matrix_impl<Scalar>::unit(mat._Data, res._Data, row * col);
+	matrix_impl<Scalar>::unit(mat._Data, mat._Data + (row * col), res._Data);
 	return res;
 }
 
@@ -485,26 +501,14 @@ inline std::experimental::square_matrix_traits<Scalar, RowCount>::square_matrix_
 template<class Scalar, size_t RowCount>
 inline constexpr bool std::experimental::square_matrix_traits<Scalar, RowCount>::is_identity(typename square_matrix_traits<Scalar, RowCount>::matrix_t const& mat) noexcept
 {
-	for (auto i = 0; i < RowCount; ++i)
-	{
-		for (auto j = 0; j < RowCount; ++j)
-		{
-			if (i == j && mat._Data[i * RowCount + j] == scalar_t(1)) continue;
-			else if (i != j && mat._Data[i * RowCount + j] == scalar_t(0)) continue;
-			return false;
-		}
-	}
-	return true;
+	return matrix_impl<Scalar>::is_identity(mat._Data, row);
 }
 
 template<class Scalar, size_t RowCount>
 inline constexpr typename std::experimental::square_matrix_traits<Scalar, RowCount>::matrix_t std::experimental::square_matrix_traits<Scalar, RowCount>::identity() noexcept
 {
 	auto res = matrix_t{};
-	for (auto i = 0; i < RowCount; ++i)
-	{
-		res._Data[i + i * RowCount] = Scalar(1);
-	}
+	matrix_impl<Scalar>::identity(res._Data, row);
 	return res;
 }
 
