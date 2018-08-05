@@ -89,7 +89,7 @@ namespace std {
 		constexpr typename Rep::scalar_t determinant(matrix<Rep> const&) noexcept;
 
 		template<class Rep>
-		constexpr matrix<Rep> classical_adjoint(matrix<Rep> const&) noexcept;
+		constexpr matrix<typename Rep::transpose_t> classical_adjoint(matrix<Rep> const&) noexcept;
 
 		template<class Rep>
 		constexpr matrix<Rep> inverse(matrix<Rep> const&);
@@ -145,14 +145,14 @@ inline constexpr bool std::experimental::matrix<Rep>::operator!=(matrix<Rep> con
 template<class Rep>
 inline constexpr std::experimental::matrix<Rep>& std::experimental::matrix<Rep>::operator*=(typename matrix<Rep>::scalar_t const& rhs) noexcept
 {
-	_Data = Rep::matrix_multiply_scalar(_Data, rhs);
+	Rep::multiply(_Data, rhs);
 	return *this;
 }
 
 template<class Rep>
 inline constexpr std::experimental::matrix<Rep>& std::experimental::matrix<Rep>::operator/=(typename matrix<Rep>::scalar_t const& rhs) noexcept
 {
-	_Data = Rep::divide(_Data, rhs);
+	Rep::divide(_Data, rhs);
 	return *this;
 }
 
@@ -160,14 +160,14 @@ inline constexpr std::experimental::matrix<Rep>& std::experimental::matrix<Rep>:
 template<class Rep>
 inline constexpr std::experimental::matrix<Rep>& std::experimental::matrix<Rep>::operator+=(matrix<Rep> const& rhs) noexcept
 {
-	_Data = Rep::add(_Data, rhs.data());
+	Rep::add(_Data, rhs.data());
 	return *this;
 }
 
 template<class Rep>
 inline constexpr std::experimental::matrix<Rep>& std::experimental::matrix<Rep>::operator-=(matrix<Rep> const& rhs) noexcept
 {
-	_Data = Rep::subtract(_Data, rhs.data());
+	Rep::subtract(_Data, rhs.data());
 	return *this;
 }
 
@@ -182,7 +182,9 @@ inline constexpr std::experimental::matrix<Rep> std::experimental::operator*(std
 template<class Rep>
 inline constexpr std::experimental::matrix<Rep> std::experimental::operator*(typename std::experimental::matrix<Rep>::scalar_t const& lhs, std::experimental::matrix<Rep> const& rhs) noexcept
 {
-	return matrix<Rep>(Rep::matrix_multiply_scalar(rhs.data(), lhs));
+	auto res(rhs);
+	Rep::multiply(res.data(), lhs);
+	return res;
 }
 
 template<class Rep>
@@ -210,20 +212,20 @@ inline constexpr std::experimental::matrix<Rep> std::experimental::operator-(std
 template<class Rep1, class Rep2>
 inline constexpr auto std::experimental::operator*(std::experimental::matrix<Rep1> const& lhs, std::experimental::matrix<Rep2> const& rhs) noexcept
 {
-	return std::experimental::matrix<typename Rep1::template other<Rep1::row, Rep2::col>>(Rep1::template matrix_multiply_matrix<Rep2::col>(lhs.data(), rhs.data()));
+	return std::experimental::matrix<typename Rep1::template other<Rep1::row, Rep2::col>>(Rep1::template multiply<Rep2::col>(lhs.data(), rhs.data()));
 }
 
 // Matrix functions
 template<class Rep>
 inline constexpr auto std::experimental::transpose(matrix<Rep> const& mat) noexcept
 {
-	return matrix<typename Rep::template other<Rep::col, Rep::row>>(transpose<Rep>(mat.data()));
+	return matrix<typename Rep::transpose_t>(Rep::transpose(mat.data()));
 }
 
 template<class Rep>
 inline constexpr auto std::experimental::submatrix(matrix<Rep> const& mat, size_t p, size_t q) noexcept
 {
-	return matrix<typename Rep::template other<Rep::row - 1, Rep::col - 1>>(Rep::submatrix(mat.data(), p, q));
+	return matrix<typename Rep::submatrix_t>(Rep::submatrix(mat.data(), p, q));
 }
 
 // Vector functions
@@ -278,9 +280,9 @@ inline constexpr typename Rep::scalar_t std::experimental::determinant(matrix<Re
 }
 
 template<class Rep>
-inline constexpr std::experimental::matrix<Rep> std::experimental::classical_adjoint(matrix<Rep> const& mat) noexcept
+inline constexpr std::experimental::matrix<typename Rep::transpose_t> std::experimental::classical_adjoint(matrix<Rep> const& mat) noexcept
 {
-	return matrix<Rep>(Rep::classical_adjoint(mat.data()));
+	return matrix<typename Rep::transpose_t>(Rep::classical_adjoint(mat.data()));
 }
 
 template<class Rep>
