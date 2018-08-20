@@ -16,10 +16,10 @@ namespace std::experimental::la {
 		constexpr matrix() = default;
 		constexpr explicit matrix(const matrix_t&) noexcept;
 		constexpr matrix(std::initializer_list<scalar_t>) noexcept;
-		constexpr matrix(scalar_t const(&src)[Rep::row * Rep::col]) noexcept;
 		// Accessors
 		constexpr matrix_t const& data() const noexcept;
 		constexpr matrix_t& data() noexcept;
+		constexpr scalar_t operator()(size_t, size_t) const;					// If the parameters are too high, what do we do? Throw, UB or error code?
 		// Equality operators
 		constexpr bool operator==(matrix<Rep> const& rhs) const noexcept;
 		constexpr bool operator!=(matrix<Rep> const& rhs) const noexcept;
@@ -109,11 +109,6 @@ inline constexpr std::experimental::la::matrix<Rep>::matrix(std::initializer_lis
 	: _Data(il)
 {}
 
-template<class Rep>
-inline constexpr std::experimental::la::matrix<Rep>::matrix(scalar_t const(&src)[Rep::row * Rep::col]) noexcept
-	: _Data(src)
-{}
-
 // Accessors
 template<class Rep>
 inline constexpr typename std::experimental::la::matrix<Rep>::matrix_t const& std::experimental::la::matrix<Rep>::data() const noexcept
@@ -125,6 +120,12 @@ template<class Rep>
 inline constexpr typename std::experimental::la::matrix<Rep>::matrix_t& std::experimental::la::matrix<Rep>::data() noexcept
 {
 	return _Data;
+}
+
+template<class Rep>
+inline constexpr typename std::experimental::la::matrix<Rep>::scalar_t std::experimental::la::matrix<Rep>::operator()(size_t i, size_t j) const
+{
+	return _Data(i, j);
 }
 
 // Equality operators

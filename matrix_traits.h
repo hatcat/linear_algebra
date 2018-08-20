@@ -70,7 +70,9 @@ namespace std::experimental::la {
 		struct matrix_type {
 			constexpr matrix_type() = default;
 			matrix_type(std::initializer_list<Scalar>) noexcept;			// Pass by value or rref?
-			matrix_type(Scalar const(&)[RowCount * ColCount]) noexcept;		// Really, this should be a span or a range
+
+			constexpr Scalar operator()(size_t, size_t) const;
+
 			Scalar _Data[RowCount * ColCount];
 		};
 
@@ -110,7 +112,9 @@ namespace std::experimental::la {
 		struct matrix_type {
 			constexpr matrix_type() = default;
 			matrix_type(size_t, size_t, std::initializer_list<Scalar>) noexcept;	// Pass by value or rref?
-			matrix_type(std::unique_ptr<Scalar>) noexcept;							// Really, this should be a span or a range
+
+			constexpr Scalar operator()(size_t, size_t) const;
+
 			size_t _Row;
 			size_t _Col;
 			std::unique_ptr<Scalar> _Data;
@@ -314,9 +318,9 @@ inline std::experimental::la::matrix_traits<Scalar, RowCount, ColCount>::matrix_
 }
 
 template<class Scalar, size_t RowCount, size_t ColCount>
-inline std::experimental::la::matrix_traits<Scalar, RowCount, ColCount>::matrix_type::matrix_type(Scalar const(&src)[RowCount * ColCount]) noexcept
+inline constexpr Scalar std::experimental::la::matrix_traits<Scalar, RowCount, ColCount>::matrix_type::operator()(size_t i, size_t j) const
 {
-	std::copy(src, src + (row * col), _Data);
+	return _Data[i * ColCount + j];
 }
 
 template<class Scalar, size_t RowCount, size_t ColCount>
