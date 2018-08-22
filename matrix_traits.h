@@ -6,6 +6,15 @@
 #include <functional>
 #include <cassert>
 
+/*
+TO DO:
+1. Eliminate dynamic_matrix_traits
+2. Migrate matrix_traits::matrix_type to additional header
+3. Create resizable matrix type
+4. Create two trait types, fixed_size and dynamic_size, and derive from those
+5. Reimplement matrix_traits to accommodate dynamic_size as well as fixed_size
+*/
+
 namespace std::experimental::la {
 	template <class Scalar>
 	struct matrix_impl
@@ -102,50 +111,6 @@ namespace std::experimental::la {
 		static constexpr typename transpose_t::matrix_t classical_adjoint(matrix_t const& mat) noexcept;
 		static constexpr matrix_t inverse(matrix_t const& mat);
 	};
-
-	////////////////////////////////////////////////////////
-	// dynamic_matrix_traits
-	////////////////////////////////////////////////////////
-	template<class Scalar, class Allocator = std::allocator<Scalar>>
-	struct dynamic_matrix_traits
-	{
-		struct matrix_type {
-			constexpr matrix_type() = default;
-			matrix_type(size_t, size_t, std::initializer_list<Scalar>) noexcept;	// Pass by value or rref?
-
-			constexpr Scalar operator()(size_t, size_t) const;
-
-			size_t _Row;
-			size_t _Col;
-			std::unique_ptr<Scalar> _Data;
-		};
-
-		using other = dynamic_matrix_traits<Scalar, Allocator>;
-		using matrix_t = matrix_type;
-		using scalar_t = Scalar;
-		using transpose_t = other;
-		using submatrix_t = other;
-
-		static constexpr bool equal(matrix_t const& lhs, matrix_t const& rhs) noexcept;
-		static constexpr bool not_equal(matrix_t const& lhs, matrix_t const& rhs) noexcept;
-		static constexpr matrix_t matrix_multiply_scalar(matrix_t const& lhs, scalar_t const& rhs) noexcept;
-		static constexpr matrix_t multiply(matrix_t const& lhs, matrix_t const& rhs);
-		static constexpr matrix_t divide(matrix_t const& lhs, scalar_t const& rhs);
-		static constexpr matrix_t add(matrix_t const& lhs, matrix_t const& rhs);
-		static constexpr matrix_t subtract(matrix_t const& lhs, matrix_t const& rhs);
-		static constexpr bool is_identity(matrix_t const& mat) noexcept;
-		static constexpr matrix_t identity(size_t) noexcept;
-		static constexpr scalar_t determinant(matrix_t const& mat);
-		static constexpr matrix_t inverse(matrix_t const& mat);
-		static constexpr scalar_t inner_product(matrix_t const& lhs, matrix_t const& rhs);
-		static constexpr scalar_t modulus(matrix_t const& mat);
-		static constexpr scalar_t modulus_squared(matrix_t const& mat);
-		static constexpr matrix_t unit(matrix_t const& mat);
-		static constexpr matrix_t submatrix(matrix_t const& mat, size_t m, size_t n);
-	};
-
-	template<class Scalar, class Allocator = std::allocator<Scalar>>
-	static constexpr typename dynamic_matrix_traits<Scalar, Allocator>::matrix_t transpose(typename dynamic_matrix_traits<Scalar, Allocator>::matrix_t const& mat) noexcept;
 }
 
 ////////////////////////////////////////////////////////
