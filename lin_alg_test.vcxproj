@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="linear_algebra.h" />
+    <ClInclude Include="matrix_storage.h" />
     <ClInclude Include="matrix_traits.h" />
   </ItemGroup>
   <ItemGroup>

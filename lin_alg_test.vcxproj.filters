@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClInclude Include="matrix_traits.h" />
     <ClInclude Include="linear_algebra.h" />
+    <ClInclude Include="matrix_storage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test.cpp" />

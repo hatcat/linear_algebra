@@ -145,7 +145,7 @@ inline constexpr bool std::experimental::la::matrix<Rep>::operator!=(matrix<Rep>
 template<class Rep>
 inline constexpr std::experimental::la::matrix<Rep>& std::experimental::la::matrix<Rep>::operator*=(typename matrix<Rep>::scalar_t const& rhs) noexcept
 {
-	Rep::multiply(_Data, rhs);
+	Rep::scalar_multiply(_Data, rhs);
 	return *this;
 }
 
@@ -183,7 +183,7 @@ template<class Rep>
 inline constexpr std::experimental::la::matrix<Rep> std::experimental::la::operator*(typename std::experimental::la::matrix<Rep>::scalar_t const& lhs, std::experimental::la::matrix<Rep> const& rhs) noexcept
 {
 	auto res(rhs);
-	Rep::multiply(res.data(), lhs);
+	Rep::scalar_multiply(res.data(), lhs);
 	return res;
 }
 
@@ -212,7 +212,7 @@ inline constexpr std::experimental::la::matrix<Rep> std::experimental::la::opera
 template<class Rep1, class Rep2>
 inline constexpr auto std::experimental::la::operator*(std::experimental::la::matrix<Rep1> const& lhs, std::experimental::la::matrix<Rep2> const& rhs) noexcept
 {
-	return std::experimental::la::matrix<typename Rep1::template other<Rep1::row, Rep2::col>>(Rep1::template multiply<Rep2::col>(lhs.data(), rhs.data()));
+	return matrix<typename Rep1::template multiply_t<Rep2>>(Rep1::template matrix_multiply<Rep2>(lhs.data(), rhs.data()));
 }
 
 // Matrix functions
