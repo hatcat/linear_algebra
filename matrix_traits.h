@@ -9,7 +9,7 @@
 /*
 TO DO:
 --1. Eliminate dynamic_matrix_traits
-2. Migrate matrix_traits::matrix_type to additional header
+--2. Migrate matrix_traits::matrix_type to additional header
 3. Create two trait types, fixed_size and dynamic_size, and derive from those
 4. Update la::matrix API to reflect fixed vs dynamic size
 5. Create resizable matrix type
@@ -17,58 +17,6 @@ TO DO:
 */
 
 namespace std::experimental::la {
-	template <class Scalar>
-	struct matrix_impl
-	{
-		template <class InputIterator>
-		static constexpr bool equal(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept;
-
-		template <class InputIterator>
-		static constexpr bool not_equal(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept;
-
-		template <class Iterator>
-		static constexpr void scalar_multiply(Iterator lhs, Iterator end, Scalar rhs, Iterator res) noexcept;
-
-		template <class InputIterator, class OutputIterator>
-		static constexpr InputIterator matrix_multiply(InputIterator lhs, InputIterator rhs, OutputIterator res, size_t m, size_t n, size_t q);
-
-		template <class Iterator>
-		static constexpr void divide(Iterator lhs, Iterator end, Scalar rhs, Iterator res);
-
-		template <class Iterator, class OperandIterator>
-		static constexpr void add(Iterator lhs, Iterator end, OperandIterator rhs, Iterator res) noexcept;
-
-		template <class Iterator, class OperandIterator>
-		static constexpr void subtract(Iterator lhs, Iterator end, OperandIterator rhs, Iterator res) noexcept;
-
-		template <class InputIterator>
-		static constexpr bool is_identity(InputIterator lhs, size_t m) noexcept;
-
-		template <class OutputIterator>
-		static constexpr OutputIterator identity(OutputIterator res, size_t m) noexcept;
-
-		template <class InputIterator>
-		static constexpr Scalar determinant(InputIterator const& lhs, size_t m);
-
-		template <class InputIterator, class OutputIterator>
-		static constexpr InputIterator inverse(InputIterator lhs, OutputIterator res, size_t m, size_t n);
-
-		template <class InputIterator>
-		static constexpr Scalar inner_product(InputIterator lhs, InputIterator end, InputIterator rhs) noexcept;
-
-		template <class InputIterator>
-		static constexpr Scalar modulus(InputIterator lhs, InputIterator end) noexcept;
-
-		template <class InputIterator>
-		static constexpr Scalar modulus_squared(InputIterator lhs, InputIterator end) noexcept;
-
-		template <class InputIterator, class OutputIterator>
-		static constexpr OutputIterator unit(InputIterator lhs, InputIterator end, OutputIterator res);
-
-		template <class InputIterator, class OutputIterator>
-		static constexpr OutputIterator submatrix(InputIterator lhs, OutputIterator res, size_t m, size_t n, size_t i, size_t j);
-	};
-
 	////////////////////////////////////////////////////////
 	// matrix_traits
 	////////////////////////////////////////////////////////
@@ -95,7 +43,7 @@ namespace std::experimental::la {
 		static constexpr scalar_t modulus(matrix_t const& mat) noexcept;
 		static constexpr scalar_t modulus_squared(matrix_t const& mat) noexcept;
 		static constexpr matrix_t unit(matrix_t const& mat) noexcept;
-		static constexpr bool is_identity(matrix_t const& mat) noexcept;
+        static constexpr bool is_identity(matrix_t const& mat) noexcept;
 		static constexpr matrix_t identity() noexcept;
 		static constexpr scalar_t determinant(matrix_t const& mat) noexcept;
 		static constexpr typename transpose_t::matrix_t classical_adjoint(matrix_t const& mat) noexcept;

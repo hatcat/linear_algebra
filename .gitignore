@@ -15,3 +15,8 @@
 *.tlog
 *.user
 unsuccessfulbuild
+*.pbxproj
+*.xcworkspacedata
+*.plist
+*.xcuserstate
+*.xcbkptlist
