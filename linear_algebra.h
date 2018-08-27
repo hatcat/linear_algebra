@@ -16,11 +16,12 @@ namespace std::experimental::la {
         constexpr matrix() = default;
         constexpr explicit matrix(const matrix_t&) noexcept;
         constexpr matrix(std::initializer_list<scalar_t>) noexcept;
+        constexpr matrix(std::pair<size_t, size_t>) noexcept;
         // Accessors
         constexpr matrix_t const& data() const noexcept;
         constexpr matrix_t& data() noexcept;
-        constexpr scalar_t operator()(size_t, size_t) const;                    // If the parameters are too high, what do we do? Throw, UB or error code?
-        constexpr scalar_t& operator()(size_t, size_t);                    // If the parameters are too high, what do we do? Throw, UB or error code?
+        constexpr scalar_t operator()(size_t, size_t) const;       // If the parameters are too high, what do we do? Throw, UB or error code?
+        constexpr scalar_t& operator()(size_t, size_t);            // If the parameters are too high, what do we do? Throw, UB or error code?
         // Equality operators
         constexpr bool operator==(matrix<Rep> const& rhs) const noexcept;
         constexpr bool operator!=(matrix<Rep> const& rhs) const noexcept;
@@ -30,7 +31,7 @@ namespace std::experimental::la {
         // Matrix binary operators
         constexpr matrix<Rep>& operator+=(matrix<Rep> const& rhs) noexcept;
         constexpr matrix<Rep>& operator-=(matrix<Rep> const& rhs) noexcept;
-    private:
+        
         matrix_t _Data;
     };
     
@@ -101,12 +102,17 @@ namespace std::experimental::la {
 // Constructors
 template<class Rep>
 inline constexpr std::experimental::la::matrix<Rep>::matrix(const matrix_t& dat) noexcept
-: _Data(dat)
+    : _Data(dat)
 {}
 
 template<class Rep>
 inline constexpr std::experimental::la::matrix<Rep>::matrix(std::initializer_list<scalar_t> il) noexcept
-: _Data(il)
+    : _Data(il)
+{}
+
+template<class Rep>
+inline constexpr std::experimental::la::matrix<Rep>::matrix(std::pair<size_t, size_t> size) noexcept
+    : _Data(size)
 {}
 
 // Accessors
